@@ -1,0 +1,95 @@
+<title>Графика Парового Торга</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--bg:#f3f1ec;--fg:#15232a;--mut:#5a6a70;--card:#fff;--line:#d7d3c8;--teal:#1c766b;--brass:#94650f;--code:#ebe8df}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10181c;--fg:#e6e9e6;--mut:#93a4a9;--card:#18242a;--line:#2b3a41;--teal:#4fb5a6;--brass:#d9a441;--code:#0c1417;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10181c;--fg:#e6e9e6;--mut:#93a4a9;--card:#18242a;--line:#2b3a41;--teal:#4fb5a6;--brass:#d9a441;--code:#0c1417;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 "IBM Plex Sans",system-ui,sans-serif;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.w{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1{font:600 28px/1.15 "Playfair Display",Georgia,serif;margin:0;text-wrap:balance}
+h2{font:600 20px/1.2 "Playfair Display",Georgia,serif;margin:14px 0 0;color:var(--brass)}
+p{margin:0;max-width:68ch}.mut{color:var(--mut)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.hd{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;justify-content:space-between}
+.hd b{font-weight:600}
+.meta{font:12px "IBM Plex Mono",monospace;color:var(--teal)}
+pre{margin:0;background:var(--code);border-radius:6px;padding:10px;white-space:pre-wrap;word-break:break-word;font:12.5px/1.5 "IBM Plex Mono",monospace;min-width:0}
+button{font:inherit;font-size:13px;background:var(--teal);color:#fff;border:0;border-radius:6px;padding:6px 12px;cursor:pointer;align-self:flex-start}
+button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+table{border-collapse:collapse;font-size:13px;min-width:560px}td,th{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left}
+.sc{overflow-x:auto}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@400;600&family=Playfair+Display:wght@600&display=swap">
+<div class="w">
+<h1>Графика для «Парового Торга»</h1>
+<p class="mut">Промпты для GPT Images. Генерируйте по порядку: сначала якорь стиля (его добавляйте в начало каждого промпта), затем картинки уровня A. Имя файла должно совпадать с именем слота, например <code>port-zagrata.png</code>. Игра сама подхватит файлы и покажет заглушки там, где картинки нет.</p>
+<div class="box"><div class="hd"><b>Якорь стиля</b><span class="meta">вставлять в начало каждого промпта</span></div><pre id="anchor"></pre><button data-c="anchor">Скопировать</button></div>
+<div class="box"><div class="hd"><b>Куда что идёт</b></div><div class="sc"><table>
+<tr><th>Слот</th><th>Где в игре</th><th>Размер</th></tr>
+<tr><td>port-*</td><td>Шапка вкладки порта, миниатюры на карте</td><td>1536×1024</td></tr>
+<tr><td>ship</td><td>Вкладка «Цеппель» и спрайт в окне перелёта</td><td>1536×1024, прозрачный фон</td></tr>
+<tr><td>sky</td><td>Прокручивающееся небо в окне перелёта</td><td>1536×1024</td></tr>
+<tr><td>ev-*</td><td>Окна пиратов, знаков Пустоты, банкротства, бюллетень в журнале</td><td>1536×1024</td></tr>
+<tr><td>crew-*</td><td>Портреты карточек экипажа (64 px)</td><td>1024×1024</td></tr>
+<tr><td>good-*</td><td>Иконки товаров (28 px)</td><td>1024×1024, прозрачный фон</td></tr>
+<tr><td>banner</td><td>Полоса над заголовком</td><td>1536×1024, обрезать до 4:1</td></tr>
+</table></div></div>
+<div id="out" class="w" style="gap:12px"></div>
+<p class="mut">Все названия карточек и описания придуманы для игры. Не просите у GPT Images конкретных персонажей и обложки книг серии.</p>
+</div>
+<script>
+var ANCHOR="Hand-painted gouache and ink illustration in a retro steampunk airship world. Muted palette: deep teal, aged brass, soot grey, cream haze, warm lamp glow. Soft atmospheric perspective, visible brush texture, readable at small size. No text, no letters, no logos, no watermark.";
+var G=[
+["A. Сначала — главные (10 картинок)",[
+["port-zagrata","1536×1024","A vast port city on a high plateau, brass docking masts with moored airships, smoky chimneys, wide stone quays, golden morning haze."],
+["port-tarnok","1536×1024","A cold mining port carved into dark cliffs, coal cranes, rail carts, grey steam, lanterns, a lone airship at a rusty mooring."],
+["port-ahadir","1536×1024","A hot trading harbor with striped canopies, spice sacks, tall arched warehouses, copper domes, a crowded dock and orange dusk light."],
+["port-velmar","1536×1024","A tidy merchant port town with clock tower, glass-roofed customs hall, neat rows of crates, mooring towers and pale blue sky."],
+["port-eltram","1536×1024","A scholarly port among terraced hills, observatory domes with brass telescopes, library towers, airships docked at slim gantries, soft evening glow."],
+["port-seryi","1536×1024","A grim far-edge outpost under heavy grey fog, a single watchtower, weathered docks, dim lamps, a hint of the void in the sky."],
+["ship","1536×1024, прозрачный PNG","Side view of a mid-size cargo zeppelin facing right, long patched envelope, brass gondola with portholes, two propellers, rope rigging, centered, plain transparent background, no ground, no clouds."],
+["sky","1536×1024","A wide empty sky for a scrolling background, layered soft clouds, gentle gradient from deep teal at the top to cream haze at the bottom, no ground, no objects, even horizontal composition."],
+["ev-pirates","1536×1024","Dark-sailed pirate zeppelin emerging from clouds beside the viewer, harpoon guns aimed, tattered banner without any symbol, tense dramatic light."],
+["ev-sign-bad","1536×1024","A cargo zeppelin crossing a strange void: smeared black and violet sky, floating pale glyph-like shapes (no readable letters), eerie silence, cold light inside the gondola."]]],
+["B. Экипаж — 12 портретов",[
+["crew-ast1","1024×1024","Bust portrait of a calm woman astrologer, Irma Weis, hair pinned up, brass star-chart monocle, navy coat with star embroidery."],
+["crew-ast2","1024×1024","Bust portrait of an elderly bearded man astrologer, Ortan Bay, thick glasses, ink-stained gloves, rolled star maps under his arm."],
+["crew-ast3","1024×1024","Bust portrait of a young sharp-eyed woman astrologer, Mirra Cast, short hair, a small brass sextant at her collar, confident smirk."],
+["crew-eng1","1024×1024","Bust portrait of a stocky bald engineer, Bruno Kal, soot on his cheek, leather apron, goggles on forehead, wrench on shoulder."],
+["crew-eng2","1024×1024","Bust portrait of a lean young woman engineer, Tessa Grapp, rolled sleeves, oily braid, welding goggles, steady fearless gaze."],
+["crew-eng3","1024×1024","Bust portrait of a grey-haired master engineer, Master Jonas, mechanical monocle, many small tools on his vest, calm authority."],
+["crew-gun1","1024×1024","Bust portrait of a scarred gunner, Rick Shatter, short beard, bandolier, tilted cap, wry half smile."],
+["crew-gun2","1024×1024","Bust portrait of a stern woman in a dark habit, Sister Olga, brass gun-sight on a chain, cold focus."],
+["crew-gun3","1024×1024","Bust portrait of an old veteran gunner, Old Val, heavy white mustache, one eye covered by a leather patch, pipe in mouth."],
+["crew-qm1","1024×1024","Bust portrait of a plump cheerful quartermaster, Pim Torgs, ledger under arm, round spectacles, ink pen behind the ear."],
+["crew-qm2","1024×1024","Bust portrait of a brisk young woman quartermaster, Dasha Colman, keys at her belt, practical jacket, sly look, ledger and abacus."],
+["crew-qm3","1024×1024","Bust portrait of an aristocratic man, Baron Sil, velvet coat, silver cane, impeccable moustache, tired but sharp eyes."]]],
+["C. Товары, события, баннер (13 картинок)",[
+["good-coal","1024×1024, прозрачный PNG","Single icon: a heap of black coal lumps with a faint brass shine, centered, bold simple shapes."],
+["good-food","1024×1024, прозрачный PNG","Single icon: a wooden crate of bread, apples and a smoked sausage, centered, bold simple shapes."],
+["good-cloth","1024×1024, прозрачный PNG","Single icon: a bolt of teal cloth with a loose unrolled end, centered, bold simple shapes."],
+["good-boilers","1024×1024, прозрачный PNG","Single icon: a small brass steam boiler with a pressure gauge and pipes, centered, bold simple shapes."],
+["good-spice","1024×1024, прозрачный PNG","Single icon: an open sack of red and orange spices with a small brass scoop, centered, bold simple shapes."],
+["good-med","1024×1024, прозрачный PNG","Single icon: a wooden medicine box with glass vials and a plain cross-free green bottle, centered, bold simple shapes."],
+["good-arms","1024×1024, прозрачный PNG","Single icon: crossed steam carbines with brass fittings, centered, bold simple shapes."],
+["good-metal","1024×1024, прозрачный PNG","Single icon: a few silvery-blue rare metal ingots with a faint glow, centered, bold simple shapes."],
+["good-blueprint","1024×1024, прозрачный PNG","Single icon: a rolled blueprint tied with string, one corner open showing gear drawings without text, centered."],
+["good-relic","1024×1024, прозрачный PNG","Single icon: an ancient strange artifact, a dark stone disc with pale violet glow and cracked brass frame, centered."],
+["ev-storm","1536×1024","A cargo zeppelin fighting a violent storm, dark towering clouds, lightning, rain streaks, lamps blazing in the gondola."],
+["ev-salvage","1536×1024","A drifting wreck of a small airship in calm sky, crates floating loose, a rope line from our zeppelin reaching toward it, warm light."],
+["ev-sign-good","1536×1024","A cargo zeppelin crossing the void as soft golden light breaks through the dark, calm and hopeful, pale glints along the hull."],
+["ev-bankrupt","1536×1024","An empty dock at dusk, a grounded sagging zeppelin with deflated envelope, closed shutters, a lone figure with a suitcase walking away."],
+["banner","1536×1024 (обрезать до 4:1)","A wide panoramic skyline of several airships drifting above steam-covered rooftops at golden hour, calm composition in the middle band."]]]
+];
+var out=document.getElementById('out'),an=document.getElementById('anchor');an.textContent=ANCHOR;
+function cp(t,b){var d=function(){var r=document.createRange();r.selectNodeContents(b.previousElementSibling);var s=getSelection();s.removeAllRanges();s.addRange(r)};
+ var o=b.textContent;function ok(){b.textContent='Скопировано';setTimeout(function(){b.textContent=o},1400)}
+ try{navigator.clipboard.writeText(t).then(ok,d)}catch(e){d()}}
+document.querySelector('[data-c=anchor]').onclick=function(){cp(ANCHOR,this)};
+G.forEach(function(g){var h=document.createElement('h2');h.textContent=g[0];out.appendChild(h);
+ g[1].forEach(function(it){var full=ANCHOR+" "+it[2];var b=document.createElement('div');b.className='box';
+ var hd=document.createElement('div');hd.className='hd';var n=document.createElement('b');n.textContent=it[0]+'.png';var m=document.createElement('span');m.className='meta';m.textContent=it[1];hd.append(n,m);
+ var p=document.createElement('pre');p.textContent=full;var bt=document.createElement('button');bt.textContent='Скопировать';bt.onclick=function(){cp(full,bt)};
+ b.append(hd,p,bt);out.appendChild(b)})});
+</script>

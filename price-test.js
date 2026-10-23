@@ -1,0 +1,12 @@
+const C=require('./core.js'); let now=0; const st=new C.PressureStore(()=>now);
+const s=C.newGame('t'); s.cash=100000; s.planet='seryi';
+const q0=C.quote(s,st,'seryi','metal');
+C.buy(s,st,'metal',15);
+const q1=C.quote(s,st,'seryi','metal');
+console.log('до покупки: buy',q0.buy,'sell',q0.sell,'| после покупки: buy',q1.buy,'sell',q1.sell);
+console.log('продажа не изменилась:', q0.sell===q1.sell, ' покупка выросла:', q1.buy>q0.buy);
+const cashBefore=s.cash; const r=C.sell(s,st,'metal',15);
+const q2=C.quote(s,st,'seryi','metal');
+console.log('перепродажа сразу: прибыль',r.profit,'(должна быть < 0)');
+console.log('после продажи: buy',q2.buy,'sell',q2.sell,'| покупка не изменилась:', q2.buy===q1.buy,' продажа упала:',q2.sell<q1.sell);
+now+=15*60*1000; const q3=C.quote(s,st,'seryi','metal'); console.log('через 15 мин: buy',q3.buy,'sell',q3.sell);
