@@ -396,3 +396,9 @@ small, .small { font-size: 12px; color: var(--muted); }
 .stat { border: 12px solid transparent; border-image: url(art/ui-slot.png) 32 fill / 12px stretch; background: none; padding: 0 4px; color: #EADBC0; }
 .stat .lab { color: #B9A683; }
 .upg { border: 14px solid transparent; border-image: url(art/ui-card.png) 32 / 14px stretch; padding: 4px 6px; }
+
+/* вкладка «Карта»: этапы и миры в кожаных рамках, карта в латунной раме */
+.stage, .dest { border: 14px solid transparent; border-image: url(art/ui-card.png) 32 / 14px stretch; padding: 4px 6px; }
+.dest[aria-pressed="true"] { box-shadow: 0 0 0 1px var(--brass), 0 0 14px -1px var(--brass); }
+.mapbox { border: 14px solid transparent; border-image: url(art/ui-frame-brass.png) 34 / 14px stretch; background: var(--panel-2); }
+.stage .bar, .dest .bar { margin-top: 2px; }

@@ -402,6 +402,12 @@ small, .small { font-size: 12px; color: var(--muted); }
 .stat .lab { color: #B9A683; }
 .upg { border: 14px solid transparent; border-image: url(art/ui-card.png) 32 / 14px stretch; padding: 4px 6px; }
 
+/* вкладка «Карта»: этапы и миры в кожаных рамках, карта в латунной раме */
+.stage, .dest { border: 14px solid transparent; border-image: url(art/ui-card.png) 32 / 14px stretch; padding: 4px 6px; }
+.dest[aria-pressed="true"] { box-shadow: 0 0 0 1px var(--brass), 0 0 14px -1px var(--brass); }
+.mapbox { border: 14px solid transparent; border-image: url(art/ui-frame-brass.png) 34 / 14px stretch; background: var(--panel-2); }
+.stage .bar, .dest .bar { margin-top: 2px; }
+
 </style>
 <div class="wrap">
   <div id="banner"></div>
@@ -1392,6 +1398,10 @@ function renderMarket() {
 
 function goodNames(ids) { return ids.map(i => GOOD[i].name).join(', '); }
 
+function riskBar(pct, cls) {
+  return '<div class="bar ' + (cls === 'high' ? 'crit' : cls === 'mid' ? 'warn' : '') + '" aria-hidden="true"><i style="width:' + clamp(pct, 0, 100) + '%"></i></div>';
+}
+
 function riskChip(pct) {
   const cls = pct < 20 ? 'low' : pct < 32 ? 'mid' : 'high';
   const word = pct < 20 ? 'низкий' : pct < 32 ? 'средний' : 'высокий';
@@ -1407,10 +1417,10 @@ function stagesHtml() {
   const immune = S.owned.filter(id => CARD[id].yamauda).length;
   return '<div class="stages">' +
     '<div class="stage"><h3>Этап 1 · по планете ' + esc(PLANET[S.planet].name) + '</h3>' +
-      '<div class="facts"><span>' + leg.days + ' дн. · ' + Math.round(flightMs(leg.days) / 1000) + ' с</span><span>топливо ' + Math.ceil(leg.fuel * st.fuelMul) + '</span>' + riskChip(pirates) + '</div>' +
+      '<div class="facts"><span>' + leg.days + ' дн. · ' + Math.round(flightMs(leg.days) / 1000) + ' с</span><span>топливо ' + Math.ceil(leg.fuel * st.fuelMul) + '</span>' + riskChip(pirates) + '</div>' + riskBar(pirates, pirates < 20 ? 'low' : pirates < 32 ? 'mid' : 'high') +
       '<small>Цеппель идёт к точке перехода. Пираты и грозы встречаются здесь, поэтому риск зависит от порта вылета и растёт со стоимостью груза.</small></div>' +
     '<div class="stage"><h3>Этап 2 · переход через Пустоту</h3>' +
-      '<div class="facts"><span>мгновенно</span><span class="risk ' + (sign < 10 ? 'low' : sign < 15 ? 'mid' : 'high') + '">знак Пустоты ' + sign + '%</span></div>' +
+      '<div class="facts"><span>мгновенно</span><span class="risk ' + (sign < 10 ? 'low' : sign < 15 ? 'mid' : 'high') + '">знак Пустоты ' + sign + '%</span></div>' + riskBar(sign, sign < 10 ? 'low' : sign < 15 ? 'mid' : 'high') +
       '<small>Цеппель сразу оказывается в порту назначения. Девять знаков из десяти зловещие: пропадает случайный член экипажа, если он не ямауда. На борту ' + aboard + ' чел., ямауда из них ' + immune + '.</small></div>' +
     '</div>';
 }
@@ -1442,7 +1452,8 @@ function renderMap() {
     return '<button class="dest' + (ok ? '' : ' far') + '" data-act="pick" data-p="' + p.id + '" aria-pressed="' + (p.id === selDest) + '">' +
       artImg('port-' + p.id, 'thumb', '') +
       '<span class="nm"><span>' + esc(p.name) + '</span><small>' + esc(p.kind) + '</small></span>' +
-      '<span class="facts"><span>' + Math.round(r.dist) + ' ед.</span><span>топливо ' + r.fuel + '</span></span>' +
+      '<span class="facts"><span>' + Math.round(r.dist) + ' ед.</span><span>топливо ' + r.fuel + ' из ' + S.fuel + '</span></span>' +
+      '<div class="bar ' + (ok ? (r.fuel > S.fuel * 0.7 ? 'warn' : '') : 'crit') + '" aria-hidden="true"><i style="width:' + clamp(Math.round(r.fuel / Math.max(1, S.fuel) * 100), 0, 100) + '%"></i></div>' +
       '<span class="goodlist">Дёшево: <b>' + goodNames(p.cheap) + '</b></span>' +
       '<span class="goodlist">Спрос: <b>' + goodNames(p.dear) + '</b></span></button>';
   }).join('');
