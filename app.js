@@ -9,7 +9,10 @@ const $ = sel => document.querySelector(sel);
 // Графика: build.py подставляет сюда найденные в art/ файлы (имя без расширения -> путь).
 // Нет файла для слота: элемент просто не рисуется, игра выглядит как прежде.
 const ART = {};
+// Запасные иконки из листа интерфейса, пока нет своей картинки слота.
+const ART_FALLBACK = { 'ev-storm': 'ui-i-storm', 'ev-bankrupt': 'ui-i-broke', 'ev-salvage': 'ui-i-cargo', 'ev-sign-good': 'ui-i-void', 'good-coal': 'ui-i-coal', 'good-arms': 'ui-i-cannon' };
 function artImg(slot, cls, alt) {
+  if (!ART[slot] && ART_FALLBACK[slot] && ART[ART_FALLBACK[slot]]) return '<img class="art ' + cls + ' fb" src="' + ART[ART_FALLBACK[slot]] + '" alt="' + esc(alt || '') + '" decoding="async">';
   if (!ART[slot]) return '';
   return '<img class="art ' + cls + '" src="' + ART[slot] + '" alt="' + esc(alt || '') + '" loading="lazy" decoding="async">';
 }
@@ -146,7 +149,8 @@ function after(result) {
 
 // ---------- отрисовка ----------
 function gauge(label, value, extra) {
-  return '<div class="gauge ' + (extra && extra.cls || '') + '"><div class="lab">' + label + '</div><div class="val">' + value + '</div>' + (extra && extra.bar || '') + '</div>';
+  const ico = extra && extra.ico ? artImg('ui-i-' + extra.ico, 'gico', '') : '';
+  return '<div class="gauge ' + (extra && extra.cls || '') + '">' + ico + '<div class="lab">' + label + '</div><div class="val">' + value + '</div>' + (extra && extra.bar || '') + '</div>';
 }
 function bar(frac, warnAt, critAt) {
   const f = clamp(frac, 0, 1);
@@ -158,11 +162,11 @@ function renderGauges() {
   const st = stats(S);
   const cargo = cargoCount(S);
   $('#gauges').innerHTML =
-    gauge('Казна', fmt(S.cash), { cls: 'money' }) +
-    gauge('День', S.day) +
-    gauge('Топливо', S.fuel + '<small> / ' + st.tank + '</small>', { bar: bar(S.fuel / st.tank, 0.35, 0.15) }) +
-    gauge('Корпус', S.hull + '<small> / ' + st.hullMax + '</small>', { bar: bar(S.hull / st.hullMax, 0.5, 0.25) }) +
-    gauge('Трюм', cargo + '<small> / ' + st.hold + '</small>', { bar: bar(cargo / st.hold, 2, 2) });
+    gauge('Казна', fmt(S.cash), { cls: 'money', ico: 'coin' }) +
+    gauge('День', S.day, { ico: 'time' }) +
+    gauge('Топливо', S.fuel + '<small> / ' + st.tank + '</small>', { ico: 'coal', bar: bar(S.fuel / st.tank, 0.35, 0.15) }) +
+    gauge('Корпус', S.hull + '<small> / ' + st.hullMax + '</small>', { ico: 'repair', bar: bar(S.hull / st.hullMax, 0.5, 0.25) }) +
+    gauge('Трюм', cargo + '<small> / ' + st.hold + '</small>', { ico: 'cargo', bar: bar(cargo / st.hold, 2, 2) });
 }
 
 function renderNet() {

@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Паровой Торг</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -238,6 +239,7 @@ small, .small { font-size: 12px; color: var(--muted); }
 .log div:not(:first-child) { color: var(--muted); }
 .toast { min-height: 20px; font-size: 13px; color: var(--danger); }
 
+.modal[hidden] { display: none; }
 .modal {
   position: fixed; inset: 0; z-index: 20; background: rgba(8, 14, 17, 0.62);
   display: flex; align-items: center; justify-content: center;
@@ -325,6 +327,48 @@ small, .small { font-size: 12px; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   .clouds, .track, .flyer, .shipsvg .prop { animation: none; }
 }
+
+/* лист интерфейса: спрайты art/ui-*.png нарезает slice-ui.py из art/ui-sheet.png.
+   Латунь и железо одинаковы в обеих темах, поэтому текст на них задан своими цветами, не токенами. */
+.gauge { position: relative; padding-left: 40px; }
+.gico { position: absolute; left: 6px; top: 8px; width: 28px; height: 28px; object-fit: contain; }
+.evimg.fb { aspect-ratio: auto; height: 84px; object-fit: contain; border: 0; }
+.gicon.fb { width: 28px; height: 28px; }
+
+.btn {
+  --plate: url(art/ui-btn.png);
+  background: transparent; border: 9px solid transparent; border-image: var(--plate) 20 fill / 9px stretch;
+  padding: 0 8px; min-height: 38px; color: #2A1D0B; font-weight: 600; text-shadow: 0 1px 0 rgba(255, 235, 180, 0.45);
+}
+.btn:hover:not(:disabled) { border-color: transparent; filter: brightness(1.12) saturate(1.1); }
+.btn:active:not(:disabled) { --plate: url(art/ui-btn-press.png); }
+.btn:disabled { --plate: url(art/ui-btn-off.png); opacity: 1; color: #4A4742; text-shadow: none; }
+.btn.buy, .btn.sell, .btn.primary { color: #2A1D0B; border-color: transparent; }
+.btn.primary { padding: 0 12px; filter: saturate(1.15); }
+.btn.danger { --plate: url(art/ui-btn-danger.png); color: #FBEAE4; border-color: transparent; text-shadow: 0 1px 0 rgba(40, 6, 2, 0.6); }
+.btn.danger:active:not(:disabled) { --plate: url(art/ui-btn-danger-press.png); }
+.slider .btn { min-width: 52px; }
+
+.tabs { border: 0; background: none; gap: 2px; }
+.tabs button {
+  border: 10px solid transparent; border-image: url(art/ui-tab-off.png) 22 fill / 10px stretch;
+  padding: 2px 2px 0; color: #E8DCC0; font-weight: 500; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+.tabs button:last-child { border-right: 10px solid transparent; }
+.tabs button:hover { border-image-source: url(art/ui-tab-hover.png); color: #2A1D0B; text-shadow: none; }
+.tabs button[aria-selected="true"] { background: none; border-image-source: url(art/ui-tab-on.png); color: #FFF3DC; }
+
+.panel { border: 12px solid transparent; border-image: url(art/ui-frame-iron.png) 34 fill / 12px stretch; padding: 4px 6px; background: var(--panel); }
+.panel::before { content: none; }
+.modal .box {
+  border: 14px solid transparent; border-image: url(art/ui-frame-brass.png) 34 fill / 14px stretch;
+  background: var(--panel); padding: 8px; --accent: var(--danger);
+}
+.modal .box.is-buy { --accent: var(--verd); }
+.modal .box.is-sell { --accent: var(--brass); }
+.modal .box.is-over { --accent: var(--danger); }
+.modal .box.flightbox { --accent: var(--verd); }
+.modal .box { box-shadow: inset 0 4px 0 var(--accent); }
 
 </style>
 <div class="wrap">
@@ -1093,8 +1137,11 @@ const $ = sel => document.querySelector(sel);
 
 // Графика: build.py подставляет сюда найденные в art/ файлы (имя без расширения -> путь).
 // Нет файла для слота: элемент просто не рисуется, игра выглядит как прежде.
-const ART = {};
+const ART = {"Steampunk Airship Over a Cosmic World": "art/Steampunk Airship Over a Cosmic World.png", "Steampunk Quartermaster Above the Clouds": "art/Steampunk Quartermaster Above the Clouds.png", "banner": "art/banner.png", "crew-ast1": "art/crew-ast1.png", "crew-ast2": "art/crew-ast2.png", "crew-ast3": "art/crew-ast3.png", "crew-eng1": "art/crew-eng1.png", "crew-eng2": "art/crew-eng2.png", "crew-eng3": "art/crew-eng3.png", "crew-gun1": "art/crew-gun1.png", "crew-gun2": "art/crew-gun2.png", "crew-gun3": "art/crew-gun3.png", "crew-qm1": "art/crew-qm1.png", "crew-qm2": "art/crew-qm2.png", "crew-qm3": "art/crew-qm3.png", "ev-pirates": "art/ev-pirates.png", "ev-sign-bad": "art/ev-sign-bad.png", "port-ahadir": "art/port-ahadir.png", "port-eltram": "art/port-eltram.png", "port-seryi": "art/port-seryi.png", "port-tarnok": "art/port-tarnok.png", "port-velmar": "art/port-velmar.png", "port-zagrata": "art/port-zagrata.png", "ship": "art/ship.png", "sky": "art/sky.png", "ui-badge": "art/ui-badge.png", "ui-btn-danger-press": "art/ui-btn-danger-press.png", "ui-btn-danger": "art/ui-btn-danger.png", "ui-btn-glow": "art/ui-btn-glow.png", "ui-btn-off": "art/ui-btn-off.png", "ui-btn-press": "art/ui-btn-press.png", "ui-btn-round-press": "art/ui-btn-round-press.png", "ui-btn-round": "art/ui-btn-round.png", "ui-btn": "art/ui-btn.png", "ui-buy": "art/ui-buy.png", "ui-card-lock": "art/ui-card-lock.png", "ui-card-sel": "art/ui-card-sel.png", "ui-card": "art/ui-card.png", "ui-check-on": "art/ui-check-on.png", "ui-check": "art/ui-check.png", "ui-close": "art/ui-close.png", "ui-corner": "art/ui-corner.png", "ui-div-l": "art/ui-div-l.png", "ui-div-m": "art/ui-div-m.png", "ui-div-r": "art/ui-div-r.png", "ui-down": "art/ui-down.png", "ui-flat": "art/ui-flat.png", "ui-frame-brass": "art/ui-frame-brass.png", "ui-frame-iron": "art/ui-frame-iron.png", "ui-frame-parch": "art/ui-frame-parch.png", "ui-gauge": "art/ui-gauge.png", "ui-gear-s": "art/ui-gear-s.png", "ui-gear": "art/ui-gear.png", "ui-i-broke": "art/ui-i-broke.png", "ui-i-cannon": "art/ui-i-cannon.png", "ui-i-cargo": "art/ui-i-cargo.png", "ui-i-coal": "art/ui-i-coal.png", "ui-i-coin": "art/ui-i-coin.png", "ui-i-compass": "art/ui-i-compass.png", "ui-i-crew": "art/ui-i-crew.png", "ui-i-pirate": "art/ui-i-pirate.png", "ui-i-rep": "art/ui-i-rep.png", "ui-i-repair": "art/ui-i-repair.png", "ui-i-ship": "art/ui-i-ship.png", "ui-i-star": "art/ui-i-star.png", "ui-i-storm": "art/ui-i-storm.png", "ui-i-time": "art/ui-i-time.png", "ui-i-void": "art/ui-i-void.png", "ui-i-warn": "art/ui-i-warn.png", "ui-needle": "art/ui-needle.png", "ui-pin": "art/ui-pin.png", "ui-plate": "art/ui-plate.png", "ui-rivet": "art/ui-rivet.png", "ui-segbar": "art/ui-segbar.png", "ui-sell": "art/ui-sell.png", "ui-sheet": "art/ui-sheet.png", "ui-slider": "art/ui-slider.png", "ui-slot": "art/ui-slot.png", "ui-steam": "art/ui-steam.png", "ui-tab-hover": "art/ui-tab-hover.png", "ui-tab-off": "art/ui-tab-off.png", "ui-tab-on": "art/ui-tab-on.png", "ui-thermo": "art/ui-thermo.png", "ui-tog-off": "art/ui-tog-off.png", "ui-tog-on": "art/ui-tog-on.png", "ui-tube-amber": "art/ui-tube-amber.png", "ui-tube-green": "art/ui-tube-green.png", "ui-tube-red": "art/ui-tube-red.png", "ui-tube": "art/ui-tube.png", "ui-up": "art/ui-up.png"};
+// Запасные иконки из листа интерфейса, пока нет своей картинки слота.
+const ART_FALLBACK = { 'ev-storm': 'ui-i-storm', 'ev-bankrupt': 'ui-i-broke', 'ev-salvage': 'ui-i-cargo', 'ev-sign-good': 'ui-i-void', 'good-coal': 'ui-i-coal', 'good-arms': 'ui-i-cannon' };
 function artImg(slot, cls, alt) {
+  if (!ART[slot] && ART_FALLBACK[slot] && ART[ART_FALLBACK[slot]]) return '<img class="art ' + cls + ' fb" src="' + ART[ART_FALLBACK[slot]] + '" alt="' + esc(alt || '') + '" decoding="async">';
   if (!ART[slot]) return '';
   return '<img class="art ' + cls + '" src="' + ART[slot] + '" alt="' + esc(alt || '') + '" loading="lazy" decoding="async">';
 }
@@ -1231,7 +1278,8 @@ function after(result) {
 
 // ---------- отрисовка ----------
 function gauge(label, value, extra) {
-  return '<div class="gauge ' + (extra && extra.cls || '') + '"><div class="lab">' + label + '</div><div class="val">' + value + '</div>' + (extra && extra.bar || '') + '</div>';
+  const ico = extra && extra.ico ? artImg('ui-i-' + extra.ico, 'gico', '') : '';
+  return '<div class="gauge ' + (extra && extra.cls || '') + '">' + ico + '<div class="lab">' + label + '</div><div class="val">' + value + '</div>' + (extra && extra.bar || '') + '</div>';
 }
 function bar(frac, warnAt, critAt) {
   const f = clamp(frac, 0, 1);
@@ -1243,11 +1291,11 @@ function renderGauges() {
   const st = stats(S);
   const cargo = cargoCount(S);
   $('#gauges').innerHTML =
-    gauge('Казна', fmt(S.cash), { cls: 'money' }) +
-    gauge('День', S.day) +
-    gauge('Топливо', S.fuel + '<small> / ' + st.tank + '</small>', { bar: bar(S.fuel / st.tank, 0.35, 0.15) }) +
-    gauge('Корпус', S.hull + '<small> / ' + st.hullMax + '</small>', { bar: bar(S.hull / st.hullMax, 0.5, 0.25) }) +
-    gauge('Трюм', cargo + '<small> / ' + st.hold + '</small>', { bar: bar(cargo / st.hold, 2, 2) });
+    gauge('Казна', fmt(S.cash), { cls: 'money', ico: 'coin' }) +
+    gauge('День', S.day, { ico: 'time' }) +
+    gauge('Топливо', S.fuel + '<small> / ' + st.tank + '</small>', { ico: 'coal', bar: bar(S.fuel / st.tank, 0.35, 0.15) }) +
+    gauge('Корпус', S.hull + '<small> / ' + st.hullMax + '</small>', { ico: 'repair', bar: bar(S.hull / st.hullMax, 0.5, 0.25) }) +
+    gauge('Трюм', cargo + '<small> / ' + st.hold + '</small>', { ico: 'cargo', bar: bar(cargo / st.hold, 2, 2) });
 }
 
 function renderNet() {
