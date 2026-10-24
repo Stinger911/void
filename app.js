@@ -166,7 +166,7 @@ function renderGauges() {
     gauge('День', S.day, { ico: 'time' }) +
     gauge('Топливо', S.fuel + '<small> / ' + st.tank + '</small>', { ico: 'coal', bar: bar(S.fuel / st.tank, 0.35, 0.15) }) +
     gauge('Корпус', S.hull + '<small> / ' + st.hullMax + '</small>', { ico: 'repair', bar: bar(S.hull / st.hullMax, 0.5, 0.25) }) +
-    gauge('Трюм', cargo + '<small> / ' + st.hold + '</small>', { ico: 'cargo', bar: bar(cargo / st.hold, 2, 2) });
+    gauge('Трюм', cargo + '<small> / ' + st.hold + '</small>', { ico: 'cargo', bar: bar(cargo / st.hold, 0, 0) });
 }
 
 function renderNet() {
@@ -202,8 +202,8 @@ function renderMarket() {
     const avg = have ? Math.round((S.basis[g.id] || 0) / have) : 0;
     const tag = q.ratio <= 0.88 ? '<span class="tag cheap">дёшево</span>' : q.ratio >= 1.2 ? '<span class="tag dear">дорого</span>' : '';
     const pbPct = Math.round(q.pb * 100), psPct = Math.round(-q.ps * 100);
-    const buyTrend = pbPct >= 2 ? '<small class="trend">▲ ' + pbPct + '% от покупок</small>' : '';
-    const sellTrend = psPct >= 2 ? '<small class="trend">▼ ' + psPct + '% от продаж</small>' : '';
+    const buyTrend = pbPct >= 2 ? '<small class="trend up">' + pbPct + '% от покупок</small>' : '';
+    const sellTrend = psPct >= 2 ? '<small class="trend down">' + psPct + '% от продаж</small>' : '';
     return '<div class="row">' +
       '<div class="gname">' + artImg('good-' + g.id, 'gicon', '') + '<span>' + g.name + '</span>' + tag + '</div>' +
       '<div class="gprice"><b>' + q.buy + '</b><small>покупка</small>' + buyTrend + '</div>' +
@@ -636,8 +636,24 @@ document.addEventListener('focusout', e => {
   if (e.target && e.target.id === 'pname') setTimeout(render, 0);
 });
 
+// тема: переключатель в шапке; без выбора игрока тема следует системной
+const THEME_KEY = 'mg-theme';
+function setTheme(dark, save) {
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  $('#theme').setAttribute('aria-checked', String(dark));
+  if (save) { try { localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light'); } catch (e) {} }
+}
+function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+  if (saved) setTheme(saved === 'dark', false);
+  else $('#theme').setAttribute('aria-checked', String(!!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)));
+  $('#theme').addEventListener('click', () => setTheme($('#theme').getAttribute('aria-checked') !== 'true', true));
+}
+
 // ---------- запуск ----------
 (function init() {
+  initTheme();
   $('#banner').innerHTML = artImg('banner', 'banner-img', 'Медный Горизонт');
   render();
   if (S.flight) {

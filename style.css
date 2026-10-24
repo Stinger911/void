@@ -382,3 +382,12 @@ small, .small { font-size: 12px; color: var(--muted); }
 .card.rare { box-shadow: 0 0 0 1px var(--verd), 0 0 10px -2px var(--verd); }
 .card.epic { box-shadow: 0 0 0 1px var(--brass), 0 0 14px -1px var(--brass); }
 .card.empty { border-style: solid; border-image-source: url(art/ui-slot.png); }
+
+/* стрелки цены и тумблер темы из листа интерфейса */
+.trend::before { content: ''; display: inline-block; width: 12px; height: 14px; margin-right: 4px; vertical-align: -2px; background: center / contain no-repeat; }
+.trend.up::before { background-image: url(art/ui-up.png); }
+.trend.down::before { background-image: url(art/ui-down.png); }
+.topr { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tog { width: 54px; height: 31px; padding: 0; border: 0; cursor: pointer; background: url(art/ui-tog-off.png) center / contain no-repeat; }
+.tog[aria-checked="true"] { background-image: url(art/ui-tog-on.png); }
+.tog:hover { filter: brightness(1.12); }

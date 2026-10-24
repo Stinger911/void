@@ -388,6 +388,15 @@ small, .small { font-size: 12px; color: var(--muted); }
 .card.epic { box-shadow: 0 0 0 1px var(--brass), 0 0 14px -1px var(--brass); }
 .card.empty { border-style: solid; border-image-source: url(art/ui-slot.png); }
 
+/* стрелки цены и тумблер темы из листа интерфейса */
+.trend::before { content: ''; display: inline-block; width: 12px; height: 14px; margin-right: 4px; vertical-align: -2px; background: center / contain no-repeat; }
+.trend.up::before { background-image: url(art/ui-up.png); }
+.trend.down::before { background-image: url(art/ui-down.png); }
+.topr { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tog { width: 54px; height: 31px; padding: 0; border: 0; cursor: pointer; background: url(art/ui-tog-off.png) center / contain no-repeat; }
+.tog[aria-checked="true"] { background-image: url(art/ui-tog-on.png); }
+.tog:hover { filter: brightness(1.12); }
+
 </style>
 <div class="wrap">
   <div id="banner"></div>
@@ -396,7 +405,11 @@ small, .small { font-size: 12px; color: var(--muted); }
       <h1>Медный Горизонт</h1>
       <span class="sub">Фан-проект по мотивам цикла «Герметикон» Вадима Панова</span>
     </div>
-    <div class="net" id="net">Автономно</div>
+    <div class="topr">
+      <label class="themelab small" for="theme">Тёмная тема</label>
+      <button class="tog" id="theme" role="switch" aria-checked="false"></button>
+      <div class="net" id="net">Автономно</div>
+    </div>
   </header>
   <section class="gauges" id="gauges" aria-label="Состояние цеппелина"></section>
   <nav class="tabs" role="tablist" aria-label="Разделы игры">
@@ -1313,7 +1326,7 @@ function renderGauges() {
     gauge('День', S.day, { ico: 'time' }) +
     gauge('Топливо', S.fuel + '<small> / ' + st.tank + '</small>', { ico: 'coal', bar: bar(S.fuel / st.tank, 0.35, 0.15) }) +
     gauge('Корпус', S.hull + '<small> / ' + st.hullMax + '</small>', { ico: 'repair', bar: bar(S.hull / st.hullMax, 0.5, 0.25) }) +
-    gauge('Трюм', cargo + '<small> / ' + st.hold + '</small>', { ico: 'cargo', bar: bar(cargo / st.hold, 2, 2) });
+    gauge('Трюм', cargo + '<small> / ' + st.hold + '</small>', { ico: 'cargo', bar: bar(cargo / st.hold, 0, 0) });
 }
 
 function renderNet() {
@@ -1349,8 +1362,8 @@ function renderMarket() {
     const avg = have ? Math.round((S.basis[g.id] || 0) / have) : 0;
     const tag = q.ratio <= 0.88 ? '<span class="tag cheap">дёшево</span>' : q.ratio >= 1.2 ? '<span class="tag dear">дорого</span>' : '';
     const pbPct = Math.round(q.pb * 100), psPct = Math.round(-q.ps * 100);
-    const buyTrend = pbPct >= 2 ? '<small class="trend">▲ ' + pbPct + '% от покупок</small>' : '';
-    const sellTrend = psPct >= 2 ? '<small class="trend">▼ ' + psPct + '% от продаж</small>' : '';
+    const buyTrend = pbPct >= 2 ? '<small class="trend up">' + pbPct + '% от покупок</small>' : '';
+    const sellTrend = psPct >= 2 ? '<small class="trend down">' + psPct + '% от продаж</small>' : '';
     return '<div class="row">' +
       '<div class="gname">' + artImg('good-' + g.id, 'gicon', '') + '<span>' + g.name + '</span>' + tag + '</div>' +
       '<div class="gprice"><b>' + q.buy + '</b><small>покупка</small>' + buyTrend + '</div>' +
@@ -1783,8 +1796,24 @@ document.addEventListener('focusout', e => {
   if (e.target && e.target.id === 'pname') setTimeout(render, 0);
 });
 
+// тема: переключатель в шапке; без выбора игрока тема следует системной
+const THEME_KEY = 'mg-theme';
+function setTheme(dark, save) {
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  $('#theme').setAttribute('aria-checked', String(dark));
+  if (save) { try { localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light'); } catch (e) {} }
+}
+function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+  if (saved) setTheme(saved === 'dark', false);
+  else $('#theme').setAttribute('aria-checked', String(!!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)));
+  $('#theme').addEventListener('click', () => setTheme($('#theme').getAttribute('aria-checked') !== 'true', true));
+}
+
 // ---------- запуск ----------
 (function init() {
+  initTheme();
   $('#banner').innerHTML = artImg('banner', 'banner-img', 'Медный Горизонт');
   render();
   if (S.flight) {
