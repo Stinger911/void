@@ -1,76 +1,80 @@
 <meta charset="utf-8">
 <meta name="claude:viewport-fit-sides" content="cover">
-<title>Паровой Торг</title>
+<title>Медный Горизонт</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Макет: шапка с датчиками, под ней вкладки; на широком экране рынок и журнал в две колонки.
    Палитра: чертёжный сине-серый, латунь для денег и меток, медянка для «купить/дёшево». */
 :root {
-  --bg: #E3E9EC;
-  --panel: #F2F5F6;
-  --panel-2: #E9EEF0;
-  --ink: #15232A;
-  --muted: #566972;
-  --line: #BFCCD2;
-  --brass: #94650F;
-  --brass-bg: #F0E3C4;
-  --verd: #1C766B;
-  --verd-bg: #D3EAE5;
-  --danger: #A23628;
-  --danger-bg: #F2D9D4;
-  --focus: #1C766B;
-  --sky-top: #A9CAD6;
-  --sky-bot: #E4EDF0;
-  --cloud: rgba(255, 255, 255, 0.7);
+  --bg: #E6DAC0;
+  --bg-hi: #F1E8D3;
+  --panel: #F4ECD8;
+  --panel-2: #EADDBE;
+  --ink: #2A1D0B;
+  --muted: #6B5A3E;
+  --line: #C4B185;
+  --brass: #86560A;
+  --brass-bg: #EFDDAE;
+  --verd: #2B6B5A;
+  --verd-bg: #CFE3D4;
+  --danger: #9C2E1F;
+  --danger-bg: #F0D3C6;
+  --focus: #2B6B5A;
+  --sky-top: #B3CBC9;
+  --sky-bot: #F0E6CC;
+  --cloud: rgba(255, 252, 240, 0.75);
   --f-display: 'Forum', 'Times New Roman', serif;
   --f-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0E171B;
-    --panel: #16232A;
-    --panel-2: #1D2D35;
-    --ink: #E3EAED;
-    --muted: #94A6AE;
-    --line: #2C3F48;
+    --bg: #150F0A;
+    --bg-hi: #241A11;
+    --panel: #231A12;
+    --panel-2: #2D2217;
+    --ink: #EADBC0;
+    --muted: #A8957A;
+    --line: #4A3A28;
     --brass: #DDA94F;
-    --brass-bg: #3A2F17;
-    --verd: #55B8A9;
-    --verd-bg: #153B37;
-    --danger: #EA7C69;
-    --danger-bg: #43211C;
-    --focus: #55B8A9;
-    --sky-top: #16313D;
-    --sky-bot: #2A4856;
-    --cloud: rgba(200, 225, 232, 0.16);
+    --brass-bg: #40301A;
+    --verd: #5FB3A0;
+    --verd-bg: #1B3A33;
+    --danger: #E57F66;
+    --danger-bg: #47231B;
+    --focus: #5FB3A0;
+    --sky-top: #1B2D31;
+    --sky-bot: #3A4A44;
+    --cloud: rgba(220, 215, 190, 0.16);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0E171B;
-  --panel: #16232A;
-  --panel-2: #1D2D35;
-  --ink: #E3EAED;
-  --muted: #94A6AE;
-  --line: #2C3F48;
+  --bg: #150F0A;
+  --bg-hi: #241A11;
+  --panel: #231A12;
+  --panel-2: #2D2217;
+  --ink: #EADBC0;
+  --muted: #A8957A;
+  --line: #4A3A28;
   --brass: #DDA94F;
-  --brass-bg: #3A2F17;
-  --verd: #55B8A9;
-  --verd-bg: #153B37;
-  --danger: #EA7C69;
-  --danger-bg: #43211C;
-  --focus: #55B8A9;
-  --sky-top: #16313D;
-  --sky-bot: #2A4856;
-  --cloud: rgba(200, 225, 232, 0.16);
+  --brass-bg: #40301A;
+  --verd: #5FB3A0;
+  --verd-bg: #1B3A33;
+  --danger: #E57F66;
+  --danger-bg: #47231B;
+  --focus: #5FB3A0;
+  --sky-top: #1B2D31;
+  --sky-bot: #3A4A44;
+  --cloud: rgba(220, 215, 190, 0.16);
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 html, body { min-height: 100%; }
 body {
-  background: var(--bg);
+  background: var(--bg) radial-gradient(ellipse 120% 60% at 50% 0, var(--bg-hi), var(--bg)) no-repeat;
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--f-body);
   font-size: 15px;
@@ -241,7 +245,7 @@ small, .small { font-size: 12px; color: var(--muted); }
 
 .modal[hidden] { display: none; }
 .modal {
-  position: fixed; inset: 0; z-index: 20; background: rgba(8, 14, 17, 0.62);
+  position: fixed; inset: 0; z-index: 20; background: rgba(14, 9, 5, 0.66);
   display: flex; align-items: center; justify-content: center;
   padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
@@ -370,12 +374,26 @@ small, .small { font-size: 12px; color: var(--muted); }
 .modal .box.flightbox { --accent: var(--verd); }
 .modal .box { box-shadow: inset 0 4px 0 var(--accent); }
 
+/* шкалы-трубки: стеклянная колба с латунными колпаками, заливка рисуется внутри */
+.bar { height: 22px; padding: 5px 0; margin-top: 4px; background: none; border: 0 solid transparent; border-width: 0 12px; border-image: url(art/ui-tube.png) 0 36 fill / 0 12px stretch; }
+.bar > i { border-radius: 2px; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -2px 0 rgba(0, 0, 0, 0.25); }
+.bar > i { background: var(--verd); }
+.bar.warn > i { background: #C8902A; }
+.bar.crit > i { background: #B8352B; }
+.gauge .bar { margin-left: -6px; margin-right: -6px; }
+
+/* рамки карточек: кожа с латунью из листа, середина рисуется панелью */
+.card { border: 14px solid transparent; border-image: url(art/ui-card.png) 32 / 14px stretch; padding: 4px 6px; background: var(--panel-2); }
+.card.rare { box-shadow: 0 0 0 1px var(--verd), 0 0 10px -2px var(--verd); }
+.card.epic { box-shadow: 0 0 0 1px var(--brass), 0 0 14px -1px var(--brass); }
+.card.empty { border-style: solid; border-image-source: url(art/ui-slot.png); }
+
 </style>
 <div class="wrap">
   <div id="banner"></div>
   <header class="top">
     <div class="brand">
-      <h1>Паровой Торг</h1>
+      <h1>Медный Горизонт</h1>
       <span class="sub">Фан-проект по мотивам цикла «Герметикон» Вадима Панова</span>
     </div>
     <div class="net" id="net">Автономно</div>
@@ -1767,7 +1785,7 @@ document.addEventListener('focusout', e => {
 
 // ---------- запуск ----------
 (function init() {
-  $('#banner').innerHTML = artImg('banner', 'banner-img', 'Паровой Торг');
+  $('#banner').innerHTML = artImg('banner', 'banner-img', 'Медный Горизонт');
   render();
   if (S.flight) {
     if (S.flight.ev && S.flight.ev.type === 'pirates') showPirates();

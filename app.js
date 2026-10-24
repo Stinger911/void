@@ -638,7 +638,7 @@ document.addEventListener('focusout', e => {
 
 // ---------- запуск ----------
 (function init() {
-  $('#banner').innerHTML = artImg('banner', 'banner-img', 'Паровой Торг');
+  $('#banner').innerHTML = artImg('banner', 'banner-img', 'Медный Горизонт');
   render();
   if (S.flight) {
     if (S.flight.ev && S.flight.ev.type === 'pirates') showPirates();
