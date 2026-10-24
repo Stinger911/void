@@ -204,7 +204,7 @@ small, .small { font-size: 12px; color: var(--muted); }
 .upgrades { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
 .upg { border: 1px solid var(--line); background: var(--panel-2); padding: 10px; display: flex; flex-direction: column; gap: 6px; }
 .pips { display: flex; gap: 4px; }
-.pips i { width: 18px; height: 8px; border: 1px solid var(--brass); }
+.pips i { flex: 1; min-width: 0; height: 8px; border: 1px solid var(--brass); }
 .pips i.on { background: var(--brass); }
 
 /* команда */
@@ -391,3 +391,8 @@ small, .small { font-size: 12px; color: var(--muted); }
 .tog { width: 54px; height: 31px; padding: 0; border: 0; cursor: pointer; background: url(art/ui-tog-off.png) center / contain no-repeat; }
 .tog[aria-checked="true"] { background-image: url(art/ui-tog-on.png); }
 .tog:hover { filter: brightness(1.12); }
+
+/* вкладка «Корабль»: характеристики в латунных гнёздах, улучшения в кожаных карточках */
+.stat { border: 12px solid transparent; border-image: url(art/ui-slot.png) 32 fill / 12px stretch; background: none; padding: 0 4px; color: #EADBC0; }
+.stat .lab { color: #B9A683; }
+.upg { border: 14px solid transparent; border-image: url(art/ui-card.png) 32 / 14px stretch; padding: 4px 6px; }
