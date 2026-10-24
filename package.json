@@ -1,0 +1,9 @@
+{
+  "name": "paroviy-torg",
+  "private": true,
+  "scripts": {
+    "build": "python3 build.py",
+    "test": "python3 build.py && node lore-test.js && node price-test.js && node ui-test.js"
+  },
+  "devDependencies": { "jsdom": "^24.0.0" }
+}
